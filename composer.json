@@ -1,0 +1,24 @@
+{
+	"name": "yohns/e",
+	"type": "project",
+	"description": "Error handler and logger",
+	"license": "MIT",
+	"minimum-stability": "stable",
+	"authors": [
+		{
+			"name": "John Brittain III",
+			"email": "Yohn@coming-soon.com",
+			"homepage": "https://github.com/Yohn",
+			"role": "Developer"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"Yohns\\Core\\" : "Core/"
+		}
+	},
+	"require": {
+		"php": "^8.0",
+		"myjw3b/helpful": "@dev"
+	}
+}
