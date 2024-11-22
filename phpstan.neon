@@ -1,0 +1,35 @@
+# phpstan.neon
+parameters:
+    level: 8
+    paths:
+        - src
+        - tests
+    excludePaths:
+        - vendor/*
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    ignoreErrors:
+        # Ignore errors about undefined constant E_ALL and other error constants in tests
+        - '#Constant E_[A-Z_]+ not found#'
+        # Ignore errors about $_SERVER superglobal
+        - '#Offset .* on array\($_SERVER\) on left side of \?\? always exists and is not nullable#'
+        # Ignore session related errors
+        - '#Variable \$_SESSION might not be defined#'
+
+    bootstrapFiles:
+        - vendor/autoload.php
+
+rules:
+    - PHPStan\Rules\Arrays\ArrayDestructuringRule
+    - PHPStan\Rules\Classes\ClassConstantRule
+    - PHPStan\Rules\Functions\CallToNonExistentFunctionRule
+    - PHPStan\Rules\Methods\CallMethodsRule
+    - PHPStan\Rules\Methods\ExistingClassesInTypehintsRule
+    - PHPStan\Rules\Methods\ReturnTypeRule
+    - PHPStan\Rules\Variables\DefinedVariableRule
+
+services:
+    -
+        class: PHPStan\Rules\Classes\InstantiationRule
+        tags:
+            - phpstan.rules.rule

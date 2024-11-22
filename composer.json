@@ -19,6 +19,23 @@
 	},
 	"require": {
 		"php": "^8.0",
-		"myjw3b/helpful": "@dev"
+		"myjw3b/helpful": "^2.0"
+	},
+	"require-dev": {
+		"pestphp/pest": "^3.5",
+		"phpstan/phpstan": "^2.0"
+	},
+	"config": {
+		"allow-plugins": {
+			"pestphp/pest-plugin": true
+		}
+	},
+	"scripts": {
+		"test": "pest",
+		"analyse": "phpstan analyse",
+		"check": [
+				"@test",
+				"@analyse"
+		]
 	}
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace Yohns;
+namespace Yohns\Core;
 
-use JW3B\erday\Helpful;
+use JW3B\Helpful\Str;
 
 /**
  * Class E
@@ -30,22 +30,22 @@ class E {
 	 * @var array
 	 */
 	protected static array $exceptions = [
-		E_ERROR             => 'E_ERROR',                // 1         Fatal
-		E_WARNING           => 'E_WARNING',              // 2         Run-time
-		E_PARSE             => 'E_PARSE',                // 4         Run-time
-		E_NOTICE            => 'E_NOTICE',               // 8         Run-time
-		E_CORE_ERROR        => 'E_CORE_ERROR',           // 16        Fatal
-		E_CORE_WARNING      => 'E_CORE_WARNING',         // 32        Warning
-		E_COMPILE_ERROR     => 'E_COMPILE_ERROR',        // 64        Fatal
-		E_COMPILE_WARNING   => 'E_COMPILE_WARNING',      // 128       Compile-time
-		E_USER_ERROR        => 'E_USER_ERROR',           // 256       User-generated
-		E_USER_WARNING      => 'E_USER_WARNING',         // 512       User-generated
-		E_USER_NOTICE       => 'E_USER_NOTICE',          // 1024      User-generated
-		E_STRICT            => 'E_STRICT',               // 2048      PHP tells us how to code
-		E_RECOVERABLE_ERROR => 'E_RECOVERABLE_ERROR',    // 4096      Catchable
-		E_DEPRECATED        => 'E_DEPRECATED',           // 8192      Run-time
-		E_USER_DEPRECATED   => 'E_USER_DEPRECATED',      // 16384     User-generated
-		E_ALL               => 'E_ALL'                   // 32767     All errors
+		E_ERROR							=> 'E_ERROR',							// 1			Fatal
+		E_WARNING						=> 'E_WARNING',						// 2			Run-time
+		E_PARSE							=> 'E_PARSE',							// 4			Run-time
+		E_NOTICE						=> 'E_NOTICE',						// 8			Run-time
+		E_CORE_ERROR				=> 'E_CORE_ERROR',				// 16			Fatal
+		E_CORE_WARNING			=> 'E_CORE_WARNING',			// 32			Warning
+		E_COMPILE_ERROR			=> 'E_COMPILE_ERROR',			// 64			Fatal
+		E_COMPILE_WARNING		=> 'E_COMPILE_WARNING',		// 128		Compile-time
+		E_USER_ERROR				=> 'E_USER_ERROR',				// 256		User-generated
+		E_USER_WARNING			=> 'E_USER_WARNING',			// 512		User-generated
+		E_USER_NOTICE				=> 'E_USER_NOTICE',				// 1024		User-generated
+		E_STRICT						=> 'E_STRICT',						// 2048		PHP tells us how to code
+		E_RECOVERABLE_ERROR	=> 'E_RECOVERABLE_ERROR',	// 4096		Catchable
+		E_DEPRECATED				=> 'E_DEPRECATED',				// 8192		Run-time
+		E_USER_DEPRECATED		=> 'E_USER_DEPRECATED',		// 16384	User-generated
+		E_ALL								=> 'E_ALL' 								// 32767	All errors
 	];
 
 	/**
@@ -61,25 +61,25 @@ class E {
 	 * Example of usage:
 	 * ```php
 	 * $opts = [
-	 *     'log' => '/path/to/log',
-	 *     'file' => true,
-	 *     'store' => ['_POST', '_FILES', '_GET', '_COOKIE', '_SESSION'],
-	 *     'display' => true
+	 *		 'log' => '/path/to/log',
+	 *		 'store' => ['_POST', '_FILES', '_GET', '_COOKIE', '_SESSION'],
+	 *		 'display' => true
 	 * ];
 	 * ```
 	 */
 	public static function initiate(array $over = []): void {
 		self::$opts = [
-			'dir'     => $over['log'] ?? __DIR__.'/../logs',
-			'file'    => $over['file'] ?? false,
-			'store'   => [
-				'_POST'    => $over['store']['_POST'] ?? true,
-				'_FILES'   => $over['store']['_FILES'] ?? true,
-				'_GET'     => $over['store']['_GET'] ?? true,
-				'_COOKIE'  => $over['store']['_COOKIE'] ?? false,
-				'_SESSION' => $over['store']['_SESSION'] ?? false,
+			'dir'			=> $over['log'] ?? __DIR__.'/../logs',
+			//? removed cause we didnt use it anyways. It was to set the error log file, but removed long ago.
+			// 'file'		=> $over['file'] ?? false,
+			'display'	=> $over['display'] ?? true,
+			'store'		=> [
+				'_POST'			=> $over['store']['_POST'] ?? true,
+				'_FILES'		=> $over['store']['_FILES'] ?? true,
+				'_GET'			=> $over['store']['_GET'] ?? true,
+				'_COOKIE'		=> $over['store']['_COOKIE'] ?? false,
+				'_SESSION'	=> $over['store']['_SESSION'] ?? false,
 			],
-			'display' => $over['display'] ?? true
 		];
 		//ini_set('error_log', self::$opts['file']);
 	}
@@ -87,7 +87,7 @@ class E {
 	/**
 	 * Error handler function to process errors.
 	 *
-	 * @param int $errno   Error number.
+	 * @param int $errno	 Error number.
 	 * @param string $errstr Error message.
 	 * @param string $errfile File where the error occurred.
 	 * @param int $errline Line number where the error occurred.
@@ -119,24 +119,43 @@ class E {
 			. $exception->getMessage() . PHP_EOL
 			. 'File: ' . self::displayFilePath($exception->getFile()) . PHP_EOL
 			. 'Line: ' . $exception->getLine();
-		self::display($log, 'Fatal');
 		self::log($log, 'Fatal');
+		self::display($log, 'Fatal');
 		return false;
 	}
 
 	/**
 	 * Display an error message in the browser.
 	 *
-	 * @param string $msg  The error message to display.
+	 * @param string $msg	The error message to display.
 	 * @param string $type The type of error.
 	 * @return void
 	 */
 	public static function display(string $msg, string $type): void {
-		if ($type == 'Fatal' && !self::$opened) {
-			echo '<html data-bs-theme="dark"><head><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"></head><body>';
-			self::$opened = true;
+		// Check if a JSON header is set
+		$headers = headers_list();
+		$isJsonHeaderSet = false;
+		foreach ($headers as $header) {
+			if (stripos($header, 'Content-Type: application/json') !== false) {
+				$isJsonHeaderSet = true;
+				break;
+			}
 		}
-		echo '<pre class="alert alert-danger m-5 w-75 mx-auto">' . htmlspecialchars($msg) . '</pre>';
+		if ($isJsonHeaderSet) {
+			// Output JSON response
+			echo json_encode([
+				'status' => 'error',
+				'type' => $type,
+				'message' => htmlspecialchars($msg),
+			], JSON_PRETTY_PRINT);
+		} else {
+			// Output HTML response
+			if ($type == 'Fatal' && !self::$opened) {
+				echo '<html data-bs-theme="dark"><head><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"></head><body>';
+				self::$opened = true;
+			}
+			echo '<pre class="alert alert-danger m-5 w-75 mx-auto">' . htmlspecialchars($msg) . '</pre>';
+		}
 	}
 
 	/**
@@ -153,7 +172,7 @@ class E {
 	 * Log the error details to a file.
 	 *
 	 * @param string $notes The notes or message to log.
-	 * @param string $type  The type of log (e.g., 'Fatal', 'Warning').
+	 * @param string $type	The type of log (e.g., 'Fatal', 'Warning').
 	 * @return bool Returns true if the log was successful.
 	 */
 	public static function log(string $notes, string $type = 'basic'): bool {
@@ -162,7 +181,7 @@ class E {
 		$name .= '-' . date('Y-m-d') . '-at-' . date('g-i-sA');
 		$dir = self::$opts['dir'] . '/' . $type . '/';
 		if (!is_dir($dir)) mkdir($dir, 0777, true);
-		$file = $dir . Helpful::clean_url($name) . '.dat';
+		$file = $dir . Str::clean_url($name) . '.log';
 
 		$logContent = self::prepareLogContent($notes);
 
