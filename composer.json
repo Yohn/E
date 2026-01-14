@@ -18,8 +18,7 @@
 		}
 	},
 	"require": {
-		"php": "^8.0",
-		"myjw3b/helpful": "^2.0"
+		"php": "^8.0"
 	},
 	"require-dev": {
 		"pestphp/pest": "^3.5",

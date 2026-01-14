@@ -2,7 +2,7 @@
 
 namespace Yohns\Core;
 
-use JW3B\Helpful\Str;
+use Yohns\Core\Str;
 
 /**
  * Class E
